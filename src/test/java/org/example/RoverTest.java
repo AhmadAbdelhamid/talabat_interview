@@ -1,25 +1,24 @@
 package org.example;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class RoverTest {
 
+    private static final Obstacles EMPTY_OBSTACLES = new Obstacles();
 
-    private Rover rover;
-
-    @BeforeEach
-    void setUp() {
-        rover = new Rover();
+    @Test
+    void position_is_equal() {
+        Position position = new Position(2, 2, "N");
+        Position position2 = new Position(2, 2, "N");
+        assertEquals(position, position2);
     }
-
-    private static final int[][] EMPTY_OBSTACLES = new int[][]{};
 
     static Stream<Arguments> allRoverMoves() {
 
@@ -37,25 +36,30 @@ class RoverTest {
                 Arguments.of("2:3:E", "M", "3:3:E", EMPTY_OBSTACLES),
                 Arguments.of("2:10:N", "M", "2:0:N", EMPTY_OBSTACLES),
                 Arguments.of("0:0:N", "RMMLML", "2:1:W", EMPTY_OBSTACLES),
-                Arguments.of("0:0:N", "RMMLMMM", "O:2:2:N", withObstacleAt(2, 2)),
-                Arguments.of("0:0:N", "RMMLMMMMMM", "O:2:5:N", withObstacleAt(2, 5))
+                Arguments.of("0:0:N", "RMMLMMM", "O:2:2:N", withObstacleAt(2, 2, "N")),
+                Arguments.of("0:0:N", "RMMLMMMMMM", "O:2:5:N", withObstacleAt(2, 5, "N"))
         );
     }
 
 
     @ParameterizedTest
     @MethodSource("allRoverMoves")
-    void checkAllRoverMoves(String startPosition, String command, String expected, int[][] obstacles) {
-        rover.updatePosition(startPosition);
-        rover.setObstacles(obstacles);
-        rover.command(command);
+    void checkAllRoverMoves(String position, String command, String expected, Obstacles obstacles) {
+        Rover rover = new Rover(position, obstacles);
         //act
-        String roverPos = rover.getPositionAsText();
+        String roverPos = rover.getDirectionFor(command);
         //assert
         assertEquals(expected, roverPos);
     }
 
-    private static int[][] withObstacleAt(int x, int y) {
-        return new int[][]{{x, y}};
+
+    //Helper---------------------------------------------------------------------------------------------
+
+    private static Obstacles withObstacleAt(int x, int y, String direction) {
+        Obstacles obstacles = new Obstacles();
+        obstacles.addObstacle(x, y, direction);
+        return obstacles;
     }
+
+
 }
