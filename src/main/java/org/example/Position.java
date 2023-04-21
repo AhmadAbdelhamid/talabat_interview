@@ -7,14 +7,6 @@ public class Position {
     private int x, y;
     private boolean isObstacle = false;
     private String direction;
-
-    public Position(String position) {
-        String[] split = position.split(":");
-            this.x = Integer.parseInt(split[0]);
-            this.y = Integer.parseInt(split[1]);
-            this.direction = split[2];
-    }
-
     public Position() {
         this.x = 0;
         this.y = 0;
@@ -68,5 +60,16 @@ public class Position {
 
     public void setObstacle(boolean obstacle) {
         isObstacle = obstacle;
+    }
+
+    public void setPosition(String position) {
+        positionParser(position);
+    }
+
+    private void positionParser(String pos) {
+        String[] split = pos.split(":");
+        this.x = Integer.parseInt(split[0]);
+        this.y = Integer.parseInt(split[1]);
+        this.direction = split[2];
     }
 }

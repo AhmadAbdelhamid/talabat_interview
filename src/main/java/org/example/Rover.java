@@ -1,7 +1,7 @@
 package org.example;
 
 public class Rover {
-    private Position position;
+    private final Position position;
 
     private int[][] obstacles;
 
@@ -45,7 +45,7 @@ public class Rover {
         position.setDirection(newDirection);
     }
 
-    public void move(String command) {
+    public void command(String command) {
         char[] commands = command.toCharArray();
         for (char cmd : commands) {
             if (cmd == 'R') {
@@ -53,22 +53,22 @@ public class Rover {
             } else if (cmd == 'L') {
                 turnLeft();
             } else {
-
-                for (int i = 0; i < obstacles.length; i++) {
-                    if (position.getX() == obstacles[i][0]
-                            && position.getY() == obstacles[i][1]) {
-                        position.setObstacle(true);
-                        System.out.println("O:" + position.getX() + ":" + position.getY() + ":" + position.getDirection());
-                        return;
+                if (obstacles != null) {
+                    for (int[] obstacle : obstacles) {
+                        if (position.getX() == obstacle[0]
+                                && position.getY() == obstacle[1]) {
+                            position.setObstacle(true);
+                            System.out.println("O:" + position.getX() + ":" + position.getY() + ":" + position.getDirection());
+                            return;
+                        }
                     }
                 }
                 position.addStep();
             }
         }
-
     }
 
-    public void setPosition(Position position) {
-        this.position = position;
+    public void updatePosition(String position) {
+        this.position.setPosition(position);
     }
 }
